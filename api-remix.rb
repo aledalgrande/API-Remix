@@ -8,7 +8,11 @@ configure :development do
 end
 
 configure :production do
-  ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+  ActiveRecord::Base.configurations[:production] = { 
+      :url => ENV['DATABASE_URL'],
+      :min_messages => "warn"
+  }
+  ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
 end
 
 class Api < ActiveRecord::Base
