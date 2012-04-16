@@ -8,7 +8,7 @@ configure :development do
 end
 
 configure :production do
-  db = URI.parse(ENV['DATABASE_URL']
+  db = URI.parse(ENV['DATABASE_URL'])
   adapter = (db.scheme == "postgres") ? "postgresql" : db.scheme
   ActiveRecord::Base.configurations[:production] = { 
       :adapter  => adapter,
