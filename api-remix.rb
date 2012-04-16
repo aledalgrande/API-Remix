@@ -8,8 +8,15 @@ configure :development do
 end
 
 configure :production do
+  db = URI.parse(ENV['DATABASE_URL']
+  adapter = (db.scheme == "postgres") ? "postgresql" : db.scheme
   ActiveRecord::Base.configurations[:production] = { 
-      :url => ENV['DATABASE_URL'],
+      :adapter  => adapter,
+      :username => db.user,
+      :password => db.password,
+      :port     => db.port,
+      :database => db.path.sub(%r(^/),""),
+      :host     => db.host,
       :min_messages => "warn"
   }
   ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
