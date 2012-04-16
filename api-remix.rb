@@ -25,5 +25,17 @@ class Api < ActiveRecord::Base
 end
 
 get '/' do
+  @total = Api.count
   haml :index
+end
+
+get '/random_apis' do
+  headers 'Content-Type' => 'application/json'
+  count = Api.count
+  apis = []
+  3.times do
+    offset = rand(count)
+    apis.push Api.first(:offset => offset)
+  end
+  apis.to_json
 end

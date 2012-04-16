@@ -2,14 +2,36 @@
 %html
   %head
     %title API Remix
-    %link{:rel => 'stylesheet', :src => 'css/bootstrap.css'}
-    %link{:rel => 'stylesheet', :src => 'css/bootstrap-responsive.css'}
+    %link{:rel => 'stylesheet', :href => 'css/bootstrap.min.css'}
+    %link{:rel => 'stylesheet', :href => 'css/bootstrap-responsive.min.css'}
+    %script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'}
+    %script{:src => 'js/bootstrap.min.js'}
+    %meta{ :name => "viewport", :content => "width=device-width, initial-scale=1.0"}
   %body
     #fluid-container
-      Boo
       .hero-unit
-        %h1 Heading
-        %p Tagline
+        %h1 No ideas for the <a href="http://thenextweb.com/dd/2012/04/16/api-mashup-contest-its-exactly-what-it-sounds-like-and-developers-can-submit-their-creations-now" target="_blank">API Mashup Contest</a>?
         %p
-          %a{:class => 'btn btn-primary btn-large'}
-            Learn more
+          Have 3 random APIs and free your imagination.
+          =@total
+          total APIs available from <a href="http://www.programmableweb.com" target="_blank">programmableweb.com</a>.
+        %p
+          %a{:class => 'btn btn-primary btn-large', :id => 'roll', :href => '#'}
+            Roll dice
+        #apis
+
+    %script
+      $(document).ready(function(){
+      $('#roll').click(function(e){
+      e.preventDefault();
+      $.get('/random_apis', function(data){
+      $('#apis').html('<p>');
+      for (var i=0; i<data.length; i++) {
+      api = data[i]['api'];
+      $('#apis').append('<a target="_blank" href="http://www.programmableweb.com' + api['url'] + '" class="btn btn-large" style="margin-right: 0.5em"><span style="font-weight: bold">' + api['name'] + '</span><br/><span style="font-style: italic">' + api['category'] + '</span><br/><span>' + api['description'] + '</span>');
+      }
+      $('#apis').append('</p>');
+      });
+      });
+      });
+    / https://github.com/aledalgrande/API-Remix
