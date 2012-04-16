@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'haml'
 require 'active_record'
+require 'uri'
 
 configure :development do
   FileUtils.mkdir("#{File.dirname(__FILE__)}/db") unless File.exists?("#{File.dirname(__FILE__)}/db")
@@ -8,7 +9,16 @@ configure :development do
 end
 
 configure :production do
-  ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+  db = URI.parse(ENV['DATABASE_URL'])
+
+  ActiveRecord::Base.establish_connection(
+    :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
+    :host     => db.host,
+    :username => db.user,
+    :password => db.password,
+    :database => db.path[1..-1],
+    :encoding => 'utf8'
+  )
 end
 
 class Api < ActiveRecord::Base
