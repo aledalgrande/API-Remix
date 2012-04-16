@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'mechanize'
 gem 'thin'
 gem 'haml'
+gem 'activerecord'
 
 group :development do
   gem 'sqlite3'
