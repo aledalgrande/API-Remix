@@ -1,5 +1,6 @@
 require 'logger'
 require 'mechanize'
+require 'active_support/core_ext'
 require './api-remix'
 
 namespace :db do
@@ -23,17 +24,27 @@ namespace :api do
   
   desc "Import APIs"
   task :import do
+    Api.destroy_all
     browser = Mechanize.new
     base_url = 'http://www.programmableweb.com'
     set1 = browser.get("#{base_url}//apis/directory/1?sort=category").search('table.listTable tr').select{|tr| tr.children.first.name.eql?('td')}
     set2 = browser.get("#{base_url}//apis/directory/2?sort=category").search('table.listTable tr').select{|tr| tr.children.first.name.eql?('td')}
     set1.concat(set2).each do |api|
-      name = api.children[0].children.first.text
-      url = api.children[0].children.first['href']
-      description = api.children[1].text
-      category = api.children[2].text
-      Api.create :name => name, :url => url, :description => description, :category => category
+      begin
+        name = fix_string api.children[0].children.first.text
+        url = fix_string api.children[0].children.first['href']
+        description = fix_string api.children[1].text
+        category = fix_string api.children[2].text
+        p name
+        Api.create :name => name, :url => url, :description => description, :category => category
+      rescue
+        p "#{api.children[0].children.first.text} has shitty characters!"
+      end
     end
   end
   
+end
+
+def fix_string(string)
+  Iconv.new('UTF-8//IGNORE', 'UTF-8').iconv(string).squish!
 end
