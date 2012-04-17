@@ -5,3 +5,7 @@ Don't have an inspiration for the API Mashup Contest? No worries, get a random t
 # Installation
 
 Currently on: http://api-remix.heroku.com/
+
+# Other
+
+Using Twitter's Bootstrap.
